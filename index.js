@@ -1,12 +1,16 @@
-const express = require('express');
-const MYSQL = require('mysql');
-const expJWT = require('express-jwt');
-const JWT = require('jsonwebtoken');
-const bodyp = require('body-parser');
-const CORS = require('cors');
+//Requires with const for ES6, and creating references to those requires, to acess methods from these dependencies.
+const express = require('express'); //this project needs express
+const MYSQL = require('mysql'); //Database created accepting certain predefined json objects
+const expJWT = require('express-jwt'); //Express necessities for dealing with jwt
+const JWT = require('jsonwebtoken'); //Used to have a secret with hash to enable login authorization
+const bodyp = require('body-parser'); //post request body parsing?
+const CORS = require('cors'); //Cross site scripting prevention?
 
-const app = express();
 
+const app = express(); //app is now a short references to express methods.
+
+
+//connection to db is now created, 'db' now posses all the methods of sql inorder to query.
 const db = MYSQL.createConnection({
   host: 'localhost',
   user: 'root',
@@ -14,9 +18,11 @@ const db = MYSQL.createConnection({
   database: 'node_practice'
 });
 
-app.use(bodyp.json());
-app.use(CORS());
+app.use(bodyp.json()); //middleware usses body parser on json objects.
+app.use(CORS()); //uses cors module..
+//this application will uses an exp tokens with secret yooo unless the route is within these two routes.
 app.use(expJWT({ secret: 'yooo' }).unless({ path: ['/api/login', '/api/register'] }));
+
 
 app.use((err, req, res, next) => {
   if (err.name === 'UnauthorizedError') return res.json({

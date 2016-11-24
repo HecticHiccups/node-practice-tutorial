@@ -24,35 +24,35 @@ app.use(CORS()); //uses cors module..
 app.use(expJWT({ secret: 'yooo' }).unless({ path: ['/api/login', '/api/register'] }));
 
 
-app.use((err, req, res, next) => {
-  if (err.name === 'UnauthorizedError') return res.json({
+app.use((err, req, res, next) => { 
+  if (err.name === 'UnauthorizedError') return res.json({ //Exception handling keep return on this line otherwise add brackets.
     status: 'failed',
     reason: 'You\'re not allowed here'
   });
 });
 
-app.listen(3000, (err) => {
-  if (!err) console.log('listening to 3000');
+app.listen(3000, (err) => { //listening on port 3000, shorthand arrow functions error parameter,  
+  if (!err) console.log('listening to 3000'); // conditionals
 });
 
-app.get('/', (req, res) => {
+app.get('/', (req, res) => { //using a GET request for the main route '/', which accepts both a req & a response,
   return res.json({
-    title: 'web conf',
-    user: req.user
+    title: 'web conf', //Returns web conf in body
+    user: req.user //Returns information from database 
   });
 });
 
-app.post('/api/aboutme', (req, res) => {
-  console.log(req.body);
-  return res.send(req.body);
+app.post('/api/aboutme', (req, res) => {//sets up POST Request, for route, 
+  console.log(req.body);   // Returns whatever is written in the body?
+  return res.send(req.body); // returns the body once its sent 
 });
 
-app.post('/api/register', (req, res) => {
-  if (!req.body || !req.body.email || !req.body.password || !req.body.fullName) return res.json({
+app.post('/api/register', (req, res) => { //if not all of these are filled then
+  if (!req.body || !req.body.email || !req.body.password || !req.body.fullName) return res.json({ 
     status: 'failed',
-    reason: 'missing credentials'
+    reason: 'missing credentials'     
   });
-
+//SQL statements created where tables users, 
   const SQL = "INSERT INTO `users` (`user_fullName`, `user_email`, `user_password`) VALUES (?, ?, ?);";
   db.query(SQL, [req.body.fullName, req.body.email, req.body.password], (err, result) => {
     if (!err) return res.json({
@@ -63,7 +63,7 @@ app.post('/api/register', (req, res) => {
     });
   });
 });
-
+//Sets up a different request for a different route and sends error json object
 app.post('/api/login', (req, res) => {
   if (!req.body || !req.body.email || !req.body.password) return res.json({
     status: 'failed',
